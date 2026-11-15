@@ -14,9 +14,8 @@ const randomIndex = Math.floor(Math.random() * videos.length);
 const secondPart = document.querySelector(".second-part");
 const secondstripimage = document.querySelector(".second-strip-image");
 const track = document.querySelector(".track");
-
-window.innerHeight;
-document.querySelector(".second-part").offsetHeight;
+const second2stripimage = document.querySelector(".second-2ndstrip-image");
+const track2 = document.querySelector(".track2");
 
 /*console.log(
   "Scroll position:",
@@ -46,12 +45,21 @@ const observer = new IntersectionObserver(
           span.style.transitionDelay = (index % 16) * 0.2 + "s";
         }); /*Using % 16 makes the delay pattern repeat for the second set.*/
 
+        track2.innerHTML += track2.innerHTML;
+
+        const strip2 = track2.querySelectorAll("span");
+        strip2.forEach((span, index) => {
+          /* forEach is a javascript array method that allows to perform an operation on evet item in a collection*/
+          span.style.transitionDelay =
+            (index % 16) * 0.2 + "s"; /* each image with this transitionDelay*/
+        });
+
         observer.unobserve(secondPart);
       }
     }); /*The only code that knows about your 0.4 threshold is the observer.*/
   },
   {
-    threshold: 0.4 /* the observer triggers when appoximately 40% of the section section is visible*/,
+    threshold: 0.1 /* the observer triggers when appoximately 40% of the section section is visible*/,
   },
   /*.second-part tells JavaScript when the user reaches the second section.*/
   /*.second-part-content is the element we actually want to animate.*/
@@ -66,6 +74,10 @@ const stripObserver = new IntersectionObserver(
       if (entry.isIntersecting) {
         secondstripimage.classList.add("shows");
 
+        setTimeout(() => {
+          second2stripimage.classList.add("shows");
+        }, 3000);
+
         stripObserver.unobserve(secondPart);
       }
     });
@@ -77,7 +89,11 @@ stripObserver.observe(secondPart);
 
 secondstripimage.classList.add("hidden");
 
+second2stripimage.classList.add("hidden");
+
 secondstripimage.classList.add("strip-animation");
+
+second2stripimage.classList.add("strip-animation2");
 
 let i = 0;
 
