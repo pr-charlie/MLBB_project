@@ -53,20 +53,20 @@ body.loading {
 
   transform: translate(-50%, -50%); /* Centers the content */
 
-  width: 1000px; /* set the width of the progress bar */
+  width: 350px; /* set the width of the progress bar */
   text-align: center;
 }
 .percentage {
   /* Percentage text */
   color: white;
-  font-size: 350px;
-  font-weight: 400;
+  font-size: 100px;
+  font-weight: 100;
   margin-bottom: 50px;
 }
 /* Progress Bar */
 .progress-bar {
-  width: 100%;
-  height: 30px;
+  width: 100%; /* set the percentage of width that need to load*/
+  height: 10px;
   background-color: rgb(236, 237, 234); /*loads in the progress bar*/
   border-radius: 55px;
   margin-top: 20px;
@@ -89,7 +89,7 @@ body.loading {
 }
 .website {
   opacity: 0; /* Initially hide the website content */
-  position: relative; /* It stays in the same place even when the page scrolls. */
+  position: relative; /*Allows you to visually move it from its original position . */
   width: 100%;
   height: 100vh;
 
@@ -101,9 +101,8 @@ body.loading {
   opacity: 1; /* Show the website content */
 }
 .website-content {
-  padding: 20px;
   font-family: Adamina;
-  font-size: 150px;
+  font-size: 50px;
   color: white;
   font-weight: 100;
   position: absolute; /* Ensures the content is positioned relative to the website */
@@ -197,13 +196,13 @@ body.loading {
 .second-part {
   position: relative; /* Ensures the video is positioned relative to the section */
   width: 100%;
-  height: 100vh;
+  height: 100%;
   /* Ensures the video doesn't overflow the section */
   isolation: isolate; /* Ensures that the section content is isolated from the background video */
 }
 .second-background-video {
   position: absolute; /* Ensures the video is positioned relative to the website */
-  top: 0;
+  top: 0; /*the video  reference point*/
   left: 0;
   width: 100%;
   height: 100vh;
@@ -211,16 +210,16 @@ body.loading {
 }
 .second-part-content {
   position: absolute; /* Ensures the content is positioned relative to the section */
-  width: 1100px;
-  height: 700px;
+  width: 350px;
+  height: 200px;
   background-color: rgb(138, 133, 133, 0.3);
   border-style: solid;
   border-color: #dd8787;
   backdrop-filter: blur(10px);
   box-shadow: 0 0 10px 5px rgba(221, 20, 81, 0.8);
   border-radius: 50px;
-  margin-left: 300px;
-  margin-top: 200px;
+  margin-left: 100px;
+  margin-top: 50px;
   z-index: 1;
   opacity: 0;
   transition: opacity 1.2s ease;
@@ -233,12 +232,12 @@ body.loading {
 }
 
 .content {
-  padding-left: 50px;
+  padding-left: 30px;
 }
 
 .content span {
   text-align: left;
-  font-size: 200px;
+  font-size: 50px;
   display: inline-block;
   color: black;
   z-index: 1; /* Ensures the content is above the video */
@@ -283,13 +282,13 @@ body.loading {
 }
 
 .description {
-  font-size: 55px;
+  font-size: 20px;
   font-family: Arial, sans-serif;
   color: black;
   line-height: 1.6;
-  padding: 20px 70px;
+  padding: 10px;
   text-align: left;
-  font-weight: 400;
+  font-weight: 100;
 }
 
 .second-strip-image.hidden {
@@ -297,20 +296,25 @@ body.loading {
 }
 .second-strip-image {
   overflow: hidden;
-  padding-top: 1000px;
+  padding-top: 280px;
   z-index: 1;
   /*mask: linear-gradient(90deg, #0000, red 20% 80%, #0000);*/
 }
 .second-strip-image span {
-  padding: 10px;
+  padding: 3px;
   opacity: 0;
-  transform: translateY(150px);
+  transform: translateY(
+    150px
+  ); /* these two control how the strip appears during animation*/
   transition:
     transform 2s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 1s ease;
 }
+
 .second-strip-image img {
-  border-radius: 20px;
+  border-radius: 10px;
+  width: 100px;
+  height: 150px;
 }
 
 .track {
@@ -321,16 +325,17 @@ body.loading {
 
 @keyframes slide {
   from {
-    transform: translateX(-50%);
+    transform: translateX(-50%); /*The window’s left side is empty*/
   }
   to {
-    transform: translateX(0);
+    transform: translateX(
+      0
+    ); /*the track’s left edge sits at the window’s left edge*/
   }
 }
 
 .second-strip-image.strip-animation {
   overflow: hidden;
-  padding-top: 1000px;
 
   transform: translateY(250px);
   transition:
@@ -360,10 +365,120 @@ body.loading {
   opacity: 1;
   transform: translateY(0); /*It rises to its original position.*/
 }
+.second-strip-image img:hover {
+  transform: scale(1.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 10px 5px rgba(221, 20, 81, 0.8);
+}
 .track {
   animation-play-state: paused;
 }
 
 .second-strip-image.shows .track {
   animation-play-state: running;
+}
+/*2nd strip*/
+
+.second-2ndstrip-image.hidden {
+  opacity: 0;
+}
+.second-2ndstrip-image {
+  padding-top: 10px;
+  overflow: hidden;
+}
+.second-2ndstrip-image span {
+  padding: 3px;
+  opacity: 0;
+  transform: translateY(
+    -150px
+  ); /*"-" = from top it first sits in 150px y-axis then the (1)*/
+  transition:
+    transform 2s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 1s ease;
+}
+.second-2ndstrip-image img {
+  border-radius: 10px;
+
+  width: 100px;
+  height: 150px;
+  position: relative;
+}
+.second-2ndstrip-image img:hover {
+  transform: scale(1.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 10px 5px rgba(221, 20, 81, 0.8);
+}
+.track2 {
+  display: flex;
+  width: max-content;
+  animation: slide2 20s linear infinite;
+}
+
+@keyframes slide2 {
+  from {
+    transform: translateX(0); /*moves an element horizontally*/
+  } /*"+"=moves right ,"-"=moves left , 0 stays in the orginal horizontal position*/
+  to {
+    transform: translateX(
+      -50%
+    ); /*destination kun position of end up hune ta bhanxa*/
+  }
+}
+/*
+.second-2ndstrip-image.strip-animation2 {
+  overflow: hidden;
+
+  background: red;
+  transition:
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 3s ease;
+  animation-name: slideUpAnimation2;
+  animation-duration: 1.5s;
+  animation-timing-function: linear;
+  animation-delay: 1.5s;
+}
+
+@keyframes slideUpAnimation2 {
+  0% {
+    transform: translateY(800px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}*/
+.second-2ndstrip-image.shows {
+  opacity: 1;
+}
+.second-2ndstrip-image.shows span {
+  opacity: 1;
+  transform: translateY(0); /*then (1) rises to its original position.*/
+}
+/*.track2 {
+  animation-play-state: paused;
+} paused the strip untill shows.track2*/
+
+.second-2ndstrip-image.shows .track2 {
+  animation-play-state: running; /*keeps the strip moving */
+}
+/*
+
+third part 
+
+*/
+.third-part {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.third-background-video {
+  position: absolute;
+
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 1;
 }
