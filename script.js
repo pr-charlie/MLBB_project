@@ -17,6 +17,13 @@ const track = document.querySelector(".track");
 const second2stripimage = document.querySelector(".second-2ndstrip-image");
 const track2 = document.querySelector(".track2");
 
+const cursor = document.querySelector(".cursor");
+
+document.addEventListener("mousemove", (event) => {
+  cursor.style.left =
+    event.clientX + "px"; /*update the cursor with clientX and client Y*/
+  cursor.style.top = event.clientY + "px";
+});
 /*console.log(
   "Scroll position:",
   window.scrollY,
@@ -82,7 +89,7 @@ const stripObserver = new IntersectionObserver(
       }
     });
   },
-  { threshold: 1 },
+  { threshold: 0.8 },
 );
 
 stripObserver.observe(secondPart);
