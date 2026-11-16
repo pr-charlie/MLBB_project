@@ -1,0 +1,229 @@
+ Mobile Legends Website (MLBB_project)
+
+A cinematic, scroll-driven landing page themed on *Mobile Legends: Bang Bang*, built from scratch with HTML, CSS and vanilla JavaScript.
+
+This is a learning project. The page is the practice material, and the real goal is being able to look at any website, break it into sections, decide what each section needs, and build it independently. That is why this README includes a full debugging log: every bug, its real cause, and how it was fixed.
+
+Status: work in progress
+
+ Contents
+
+- [Features so far](features-so-far)
+- [Tech stack](tech-stack)
+- [Project structure](project-structure)
+- [Run locally](run-locally)
+- [How it works](how-it-works)
+- [Roadmap](roadmap)
+- [Debugging log](debugging-log)
+- [Debugging method](debugging-method)
+- [Concepts learned](concepts-learned)
+- [Credits and disclaimer](credits-and-disclaimer)
+
+ Features so far
+
+- Loading screen: a 0% to 100% counter with a growing progress bar. When it finishes, the whole loader slides upward off the screen.
+- Hero section: a full-screen background video chosen at random from three videos on every visit, with a "Mobile Legends" title that rises in letter by letter with a blur.
+- Second section: a looping video background with a glass-effect panel. The panel fades in and its "Hero" heading reveals letter by letter when the section scrolls into view.
+- Two endless image strips: rows of character images that slide continuously with no gap, and appear one by one with staggered delays.
+- Third section: a video background section (in progress).
+
+ Tech stack
+
+- HTML5
+- CSS3: flexbox, positioning, transitions, @keyframes, backdrop-filter, cubic-bezier() easing
+- Vanilla JavaScript: DOM selection, classList, setInterval, IntersectionObserver
+- No frameworks or animation libraries
+
+ Project structure
+
+
+MLBB_project/
+├── frontend.html    page structure (sections, classes)
+├── style.css        layout, animations, transitions
+├── script.js        loader logic, random video, scroll triggers
+├── images/          character images used in the strips
+└── video/           background videos
+
+
+ Run locally
+
+1. Clone or download the repository.
+2. Open frontend.html in a browser (or use the VS Code *Live Server* extension).
+3. Test at 100% browser zoom (Ctrl + 0). Several pixel values and scroll triggers depend on window size, and testing at a different zoom hides real behaviour (see bug E1).
+
+ How it works
+
+The one rule the whole project follows: JavaScript does not animate anything. It adds and removes class names, and CSS does the visual work.
+
+When the page loads, script.js runs once from top to bottom, then waits for timers and scroll events:
+
+1. Setup (runs immediately): selects the elements with document.querySelector, builds the videos array and picks a random index with Math.floor(Math.random() * videos.length).
+2. Observers created (callbacks stored, not run): two IntersectionObservers wait for the second section to appear.
+3. Loader counter: setInterval runs every 20ms, increasing i and updating the percentage text and the progress bar width.
+4. At 100%: the loader gets the class hide (CSS slides it up), the website gets show, the body loses loading so scrolling unlocks, the random video loads, and one second later the video plays and the title gets reveal-title.
+5. On scroll: when enough of the second section is visible, the first observer shows the glass panel, reveals the "Hero" letters, and doubles the first strip's images. The second observer reveals both strips and doubles the second strip's images.
+
+Every reveal in the project uses the same three parts:
+
+1. Start state: a hidden look in CSS (for example opacity: 0 and transform: translateY(70px)).
+2. Animation or transition: how it gets from hidden to visible.
+3. Trigger: a class that JavaScript adds at the right moment.
+
+ Roadmap
+
+The target is a reference site (Akaza / Demon Slayer themed) recreated with Mobile Legends content. Progress against its sections:
+
+- [x] Loading screen with counter and slide-up
+- [x] Hero with full-screen video and letter-by-letter title
+- [ ] Sticky navigation with smooth scrolling
+- [ ] Video section with an image strip and a moving text strip *(image strips done, text strip and layout polish remaining)*
+- [ ] Glitch-style statement headline
+- [ ] Horizontal card carousel with stat bars
+- [ ] Animated stat counters
+- [ ] Vertical timeline
+- [ ] Hero-style sections with parallax titles
+- [ ] Final call-to-action with "back to top"
+- [ ] Custom glowing cursor dot
+- [ ] Scroll progress line
+
+ Debugging log
+
+Status labels: Fixed, Diagnosed (cause found, fix not yet confirmed), Open.
+
+ A. Intro loader and background video (earlier sessions)
+
+| Problem | What was investigated |
+| --- | --- |
+| Loader not centered | Parent positioning, flexbox alignment, div placement |
+| Progress bar positioning | Width, height, padding, parent alignment |
+| Loader behaviour | Percentage logic, interval timing, CSS animation |
+| Loader disappearing wrongly | The .hide class and the upward translateY(-100%) |
+| Website appearing too early | Timing between loader exit and website visibility |
+| Video playing under the loader | Start playback only after the loader exits (video.currentTime = 0; video.play() inside a setTimeout) |
+| Video and content overlapping | Layering with position and z-index |
+| Title letters appearing all at once | One <span> per letter plus animation-delay per letter |
+
+ B. Scroll position and restoration (earlier sessions)
+
+The page sometimes opened already scrolled into the second section after a refresh. It was investigated with window.scrollY (how far the page is scrolled) and getBoundingClientRect().top (an element's distance from the top of the viewport). Browsers restore the previous scroll position on reload by default, and history.scrollRestoration = "manual" turns that off.
+
+ C. Reveal animations
+
+C1. Hero reveal played before anyone could see it (Fixed)
+- Symptom: the Hero letters had already finished animating by the time the section scrolled into view.
+- Cause: the reveal-content class was added inside the loader's setTimeout, while the section was still below the screen. An animation starts the moment its selector matches, so the line that adds the class decides when the user sees it.
+- Fix: moved classList.add("reveal-content") into the IntersectionObserver callback.
+
+C2. Hero letters flashed instead of rising (Fixed, one cosmetic item open)
+- Cause: the base style had no opacity: 0, so letters were visible during their animation-delay, vanished at the 0% keyframe, then faded back in. There was also no display: inline-block, and transform is ignored on inline elements, so the letters never moved.
+- Fix: added both. The base style must match the 0% keyframe.
+- Still open: the stagger delays (0.12, 0.24, 0.48, 0.6) are uneven. The title uses an even 0.12s step.
+
+ D. Endless image strips
+
+D1. <marquee> tag (Fixed)
+- Cause: <marquee> is obsolete, speed is not one of its attributes, it leaves empty gaps, and flex was set on the wrong parent.
+- Fix: replaced it with a window (.second-strip-image, overflow: hidden) and a track (.track, display: flex; width: max-content) animated with @keyframes and translateX.
+
+D2. Gap and snap at the end of each lap (Fixed for strip 1)
+- Cause: the track is two identical halves and the animation slides exactly one half. The loop only looks endless if the first and last frames are identical, and each half must be at least as wide as the viewport. If a half is narrower, the end of the track becomes visible, then the lap restarts and snaps.
+- Fix: duplicate the images in JavaScript, and give matching images in both halves the same delay.
+
+js
+track.innerHTML += track.innerHTML;
+
+track.querySelectorAll("span").forEach((span, index) => {
+  span.style.transitionDelay = (index % 16) * 0.2 + "s"; // 16 = images per half
+});
+
+
+D3. Two animations fighting over transform (Prevented)
+- Cause: .track already animates transform for the slide, so a second transform animation on the same element overrides it.
+- Fix: reveal the wrapper and the individual <span>s, never .track itself.
+
+D4. Track not displaying after the marquee swap (Cause not recorded)
+- A checklist was built instead: does the selector match the HTML class name, is the rule actually being read (an unclosed } or broken comment swallows the next rule), and is the result clipped, covered or zero-sized? See [Debugging method](debugging-method).
+
+D5. Strip 2 restarts halfway and is not smooth (Open, diagnosed)
+- Direction: from: translateX(50%); to: translateX(0) makes the first and last frames different pictures, so every lap snaps back. Right to left needs from: 0; to: translateX(-50%).
+- Width: strip 2 has 10 images at about 106px each (100px image plus 3px padding on each side), so one half is about 1060px, likely narrower than the window. It needs more images per half.
+- No start state: .second-2ndstrip-image span has no opacity: 0 or translateY, so the per-image transition-delay has nothing to animate and the images cannot appear one by one.
+
+ E. Visibility, thresholds and layering
+
+E1. First strip disappeared when there were many images (Fixed, fragile)
+- Symptom: the strip stayed invisible and the shows class never appeared. With fewer images it worked.
+- Cause: the most an IntersectionObserver ratio can ever reach is window height divided by section height. Measured in the console: window.innerHeight was 671 and the section's offsetHeight was 3544, so the ceiling was 671 / 3544 = about 0.19. The thresholds were 0.4 and 1, which could never be reached, so the callbacks never ran and the spans stayed at opacity: 0.
+- Fix: thresholds lowered to 0.1 and 0.18.
+- Lessons: 0.18 is very close to the 0.19 ceiling, so on a shorter window it would fail again. Early measurements (a 1992px window) came from browser zoom at roughly 33%, so always measure at 100% zoom.
+- Better long-term fix: make every section exactly 100vh and observe the specific element to reveal, so ordinary thresholds work.
+
+E2. Second strip invisible (Fixed)
+- Cause: the background video is position: absolute, and positioned elements paint on a higher layer than normal-flow ones. Strip 2 was static, so the video covered it. The images were there all along.
+- Fix: position: relative (currently on the strip's images). Without offsets it does not move the element, it only changes its paint layer.
+- Learned: position does two jobs: where an element is placed, and which layer it paints on. z-index only works on positioned elements.
+
+E3. Third section measured 0 x 0 (Diagnosed)
+- Cause suspected: the .third-part rule was not being applied (a broken /* ... */ comment merges text into the next selector and drops the rule, or the class name did not match). A box of 0 x 0 cannot come from width: 100%; height: 100vh.
+- Learned: an absolute element with no top/left/right/bottom stays at its static position and does not jump to an ancestor. Full-screen sections should be in the flow with position: relative, as anchors for their video.
+- Status: the CSS now looks valid, but the display has not been confirmed.
+
+E4. display: flexbox (Fixed)
+- Not a valid value. The correct one is display: flex.
+
+E5. Reusing .strip-animation for strip 2 (Fixed)
+- Cause: querySelector returns only the first match, so the JS line only reached strip 1. In CSS, .a.b with no space means "an element with both classes", so the rule only matched strip 1's wrapper.
+- Fix: a separate strip-animation2 class with its own CSS and JS, for the second wrapper.
+
+ F. Git and GitHub (earlier sessions)
+
+| Error | What it meant |
+| --- | --- |
+| fetch first | The remote repository had changes the local one did not |
+| nothing to commit, working tree clean | Git found no new changes to commit |
+| Push rejected | Local and remote histories needed to be reconciled before pushing |
+
+ Known cleanup
+
+- .strip-animation has both a transition and an animation doing the same job. The animation also runs on page load, under the loader. Keep one.
+- .second-part no longer has overflow: hidden, so strip content can hang below the section.
+- % 16 and % 10 are hard-coded image counts.
+- Pixel sizes (padding-top, 100px images) behave differently on different screens. Consider vw/vh units.
+- The hover scale on .second-part-content snaps, because its transition only lists opacity.
+
+ Debugging method
+
+Every bug above was solved the same way:
+
+1. Find the responsible HTML element.
+2. Find the CSS rule or JS line that controls it.
+3. Measure before guessing. Browser DevTools (F12): *Elements* (hover a line to see the element's box), *Styles* (untick a property to test it), *Computed* (final values), *Console* (window.innerHeight, element.offsetHeight, console.log).
+
+Element not showing?
+- Does the selector match the HTML exactly (spelling, . vs , .a.b vs .a .b)?
+- Is the rule being read? (An unclosed } or broken comment above it can swallow it.)
+- Is it clipped by overflow: hidden, painted under another element, still at opacity: 0, or zero-sized?
+
+Scroll trigger not firing?
+- Put console.log(entry.intersectionRatio) inside the observer callback.
+- Check the ceiling: window height divided by element height. The threshold must be below it.
+- Check that observer.observe(element) is actually called.
+
+ Concepts learned
+
+| Area | Concepts |
+| --- | --- |
+| HTML | Elements, parents and children, siblings, classes vs IDs |
+| CSS layout | Flexbox, position (static, relative, absolute, fixed), overflow, max-content |
+| CSS animation | Transitions, @keyframes, animation-delay and transition-delay, cubic-bezier(), transform, filter: blur() |
+| CSS layering | z-index, paint order, stacking contexts, isolation |
+| JavaScript | Objects, properties vs methods, arrays, Math.random, Math.floor, callbacks, setInterval, forEach, % |
+| DOM | querySelector, querySelectorAll, classList, innerHTML, style, video.play() |
+| Browser APIs | IntersectionObserver and thresholds, scroll restoration, scrollY, getBoundingClientRect |
+| Patterns | Class-switch reveals, seamless looping tracks, staggered delays |
+| Git | Commit, fetch, push, remote changes |
+
+ Credits and disclaimer
+
+- Layout and effects are inspired by an Akaza / Demon Slayer themed website shown in a TikTok video by @mie_ayamm__3. The code here is written independently as a learning exercise.
+- *Mobile Legends: Bang Bang* and its characters, art and videos belong to Moonton. This is an unofficial fan project made for learning, not for commercial use.
