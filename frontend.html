@@ -8,21 +8,24 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body class="loading">
-    <!-- Loading Screen -->
-    <div class="loader">
-      <div class="loading-content">
-        <!--progress bar-->
-        <h1 class="percentage">0%</h1>
+  <body>
+    <div class="cursor"></div>
 
-        <div class="progress-bar">
-          <!--background track of progress bar-->
-          <div class="progress"></div>
-          <!--part that will grow-->
+    <div class="loading">
+      <!-- Loading Screen -->
+      <div class="loader">
+        <div class="loading-content">
+          <!--progress bar-->
+          <h1 class="percentage">0%</h1>
+
+          <div class="progress-bar">
+            <!--background track of progress bar-->
+            <div class="progress"></div>
+            <!--part that will grow-->
+          </div>
         </div>
       </div>
     </div>
-
     <!-- Main Website -->
     <main class="website">
       <video muted loop playsinline class="background-video" id="introVideo">
@@ -160,11 +163,11 @@
       </div>
     </section>
 
-    <secion1 class="third-part">
+    <section class="third-part">
       <video autoplay muted loop class="third-background-video">
         <source src="video/natan .mp4" type="video/mp4" />
       </video>
-    </secion1>
+    </section>
 
     <script src="script.js"></script>
     <!---The browser reads the <script> tag and starts executing script.js after the HTML is loaded-->
