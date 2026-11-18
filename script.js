@@ -19,11 +19,66 @@ const track2 = document.querySelector(".track2");
 
 const cursor = document.querySelector(".cursor");
 
-document.addEventListener("mousemove", (event) => {
-  cursor.style.left =
-    event.clientX + "px"; /*update the cursor with clientX and client Y*/
-  cursor.style.top = event.clientY + "px";
-});
+      // Target position: where the mouse is
+      let mouseX = 0;
+      let mouseY = 0;
+
+      // Current position: where the glowing circle is
+      let cursorX = 0;
+      let cursorY = 0;
+
+      let previousX = 0;
+      let previousY = 0;
+
+      let stretch = 1;
+      let targetStretch = 1;
+
+      // Track the mouse position
+      document.addEventListener("mousemove", (event) => {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+      });
+
+      // Smoothly move the glowing circle
+
+      function animateCursor() {
+        // 1. Smoothly follow the mouse
+        cursorX += (mouseX - cursorX) * 0.1;
+        cursorY += (mouseY - cursorY) * 0.1;
+
+        // 2. Calculate movement
+        let dx = cursorX - previousX;
+        let dy = cursorY - previousY;
+
+        // 3. Calculate movement distance between two animation frames.
+        let speed = Math.sqrt(dx * dx + dy * dy);
+
+        // 4. Calculate target stretching
+        targetStretch = Math.min(1 + speed * 0.05, 2);
+
+        // 5. Gradually approach target stretching
+        stretch += (targetStretch - stretch) * 0.1;
+
+        // 6. Calculate direction
+        let angle = Math.atan2(dy, dx) * (180 / Math.PI); //let angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+        // 7. Update cursor position
+        cursor.style.left = cursorX + "px";
+        cursor.style.top = cursorY + "px";
+
+        // 8. Apply rotation and stretching
+        cursor.style.transform = `translate(-50%, -50%) rotate(${angle}deg) scaleX(${stretch})`; //${angle} exact value stored inside the angle variable directly into the text string
+
+        // 9. Remember the current position
+        previousX = cursorX;
+        previousY = cursorY;
+
+        // 10. Continue animation
+        requestAnimationFrame(animateCursor);
+      }
+
+      animateCursor(); //moves the glowing circle toward that target.
+
 /*console.log(
   "Scroll position:",
   window.scrollY,
