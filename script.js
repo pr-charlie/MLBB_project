@@ -17,13 +17,15 @@ const track = document.querySelector(".track");
 const second2stripimage = document.querySelector(".second-2ndstrip-image");
 const track2 = document.querySelector(".track2");
 
-const cursor = document.querySelector(".cursor");
+//thirdpart
+const thirdpart = document.querySelector(".third-part");
+const thirdcontent = document.querySelector(".third-content");
 
-document.addEventListener("mousemove", (event) => {
+/*document.addEventListener("mousemove", (event) => {
   cursor.style.left =
-    event.clientX + "px"; /*update the cursor with clientX and client Y*/
+    event.clientX + "px"; /*update the cursor with clientX and client Y
   cursor.style.top = event.clientY + "px";
-});
+});*/
 /*console.log(
   "Scroll position:",
   window.scrollY,
@@ -133,3 +135,8 @@ let loading = setInterval(() => {
     }, 1000); /* tells when to play the animation when the loader is disappear (after 1millisecond)*/
   }
 }, 20); /* Set the interval to 50 milliseconds for a smooth loading effect */
+
+//third part
+
+thirdcontent.innerHTML =
+  thirdcontent.innerHTML + thirdcontent.innerHTML + thirdcontent.innerHTML;
