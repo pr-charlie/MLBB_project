@@ -1,0 +1,178 @@
+<!---doctype html>
+<html>
+  <style>
+    .box {
+      width: 200px;
+      height: 100px;
+      background: pink;
+
+      animation: slide2 10s linear infinite;
+    }
+    @keyframes slide2 {
+      from {
+        transform: translateX(-50%); /*moves an element horizontally*/
+      } /*"+"=moves right ,"-"=moves left , 0 stays in the orginal horizontal position*/
+      to {
+        transform: translate(
+          0px
+        ); /*destination kun position of end up hune ta bhanxa*/
+      }
+    }
+      Spaces separate values belonging to one shadow.
+  Commas separate different shadows.
+
+    document.addEventListener("mousemove", (event) => {
+        /*Whenever the mouse moves, JavaScript executes the function.*/
+        cursor.style.left =
+          event.clientX + "px"; /*update the cursor with clientX and client Y*/
+        cursor.style.top =
+          event.clientY + "px"; /*connect the mouse position to our circle*/
+      });
+  </style>
+  <body>
+    <div class="box">Hello</div>
+  </body>
+
+  
+  
+</html>---->
+
+<!doctype html>
+<html>
+  <head>
+    <title>Custom Cursor</title>
+
+    <style>
+      body {
+        background: #111;
+        min-height: 100vh;
+      }
+
+      .cursor {
+        width: 40px;
+        height: 40px;
+        background-color: white;
+        border-radius: 50%;
+        position: fixed; /*where an element is displayed*/
+        pointer-events: none;
+
+        transform: translate(-50%, -50%);
+
+        /* box-shadow: 0 0 10px 5px rgba(221, 20, 81, 0.8);add the shadow */
+
+        box-shadow:/* adds the layers of shadow*/
+          0 0 5px rgb(191, 1, 1),
+          0 0 15px cyan,
+          0 0 30px cyan;
+        z-index: 1;
+      }
+      .dot {
+        width: 30px;
+        height: 30px;
+        background-color: white;
+        border-radius: 50%;
+        position: fixed; /*where an element is displayed*/
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+
+        /* box-shadow: 0 0 10px 5px rgba(221, 20, 81, 0.8);add the shadow */
+
+        box-shadow:/* adds the layers of shadow*/
+          0 0 5px rgb(243, 243, 26),
+          0 0 15px rgb(224, 235, 68),
+          0 0 30px rgb(226, 250, 10);
+        z-index: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="cursor"></div>
+
+    <script>
+      const cursor = document.querySelector(".cursor");
+      //const dot = document.querySelector(".dot");
+      const dot = document.createElement("div");
+      dot.classList.add("dot");
+      document.body.appendChild(dot);
+
+      // Target position: where the mouse is
+      let mouseX = 0;
+      let mouseY = 0;
+
+      // Current position: where the glowing circle is
+      let cursorX = 0;
+      let cursorY = 0;
+
+      let previousX = 0;
+      let previousY = 0;
+
+      let dotX = 0;
+      let dotY = 0;
+
+      let stretch = 1;
+      let targetStretch = 1;
+
+      // Track the mouse position
+      document.addEventListener("mousemove", (event) => {
+        //event is a parameter of the arrow function
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+      });
+
+      // Smoothly move the glowing circle
+
+      function animateCursor() {
+        // 1. Smoothly follow the mouse,easing style interpolation
+        cursorX += (mouseX - cursorX) * 0.1; //follower
+        cursorY += (mouseY - cursorY) * 0.1;
+
+        // 2. Calculate how far the mouse moved horizontally and vertically movement
+        let dx = cursorX - previousX; //dx calculate how it moved to get there.
+        let dy = cursorY - previousY;
+
+        // Turn those two dx dy movements into one distance
+        let speed = Math.sqrt(dx * dx + dy * dy); //How far apart are the previous position and the current position in straight-line?
+        //Math.sqrt() returns the square root
+
+        // 4. Calculate target stretching
+        targetStretch = Math.min(1 + speed * 0.05, 2); //How stretched we want the cursor to become.
+        // 1 = normal width of glowingcircle scaleX() changes an element’s horizontal scale.
+        //speed * 0.05 adds stretching based on movement
+
+        // 5. Gradually approach target stretching
+        stretch += (targetStretch - stretch) * 0.1; //
+
+        // 6. Calculate direction/an angle.
+        let angle = Math.atan2(dy, dx) * (180 / Math.PI); //Math.atan2(dy, dx) turns the movement (dx, dy) into a direction angle,
+        //angle is required to give the horizontally stretched glowindd circle an angle to move in any direction
+        console.log(speed.toFixed(2), angle.toFixed(0));
+
+        // 7. Update cursor position
+        cursor.style.left = cursorX + "px";
+        cursor.style.top = cursorY + "px";
+
+        // 8. Apply rotation and stretching
+        cursor.style.transform = `translate(-50%, -50%) rotate(${angle}deg) scaleX(${stretch})`; //${angle} exact value stored inside the angle variable directly into the text string
+        //rotate(...)	Turns the cursor toward the movement direction.
+        //scaleX(...)	Stretches it along its own horizontal axis only .
+
+        // 9. Remember the current position
+        previousX = cursorX; //destination = source
+        previousY = cursorY;
+
+        dotX += (cursorX - dotX) * 0.15; //Move dotX 10% of the remaining distance toward cursorX.
+        dotY += (cursorY - dotY) * 0.15;
+
+        dot.style.left = dotX + "px";
+        dot.style.top = dotY + "px";
+
+        // 10. Continue animation
+        requestAnimationFrame(animateCursor);
+      }
+
+      animateCursor(); //moves the glowing circle toward that target.
+      //runs about 60 times per second, once per screen refresh.
+    </script>
+  </body>
+</html>
