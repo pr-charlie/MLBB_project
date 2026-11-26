@@ -8,24 +8,22 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body>
-    <div class="cursor"></div>
-
-    <div class="loading">
-      <!-- Loading Screen -->
-      <div class="loader">
-        <div class="loading-content">
-          <!--progress bar-->
-          <h1 class="percentage">0%</h1>
-
-          <div class="progress-bar">
-            <!--background track of progress bar-->
-            <div class="progress"></div>
-            <!--part that will grow-->
-          </div>
+  <body class="loading">
+    <!--scroll locking class for the whole the html -->
+    <!-- Loading Screen -->
+    <div class="loader">
+      <div class="loading-content">
+        <!--progress bar-->
+        <h1 class="percentage">0%</h1>
+        `
+        <div class="progress-bar">
+          <!--background track of progress bar-->
+          <div class="progress"></div>
+          <!--part that will grow-->
         </div>
       </div>
     </div>
+
     <!-- Main Website -->
     <main class="website">
       <video muted loop playsinline class="background-video" id="introVideo">
@@ -163,10 +161,62 @@
       </div>
     </section>
 
+    <!---web site trend where the background content is moved at a different speed than the foreground content while scrolling-->
+
     <section class="third-part">
-      <video autoplay muted loop class="third-background-video">
-        <source src="video/natan .mp4" type="video/mp4" />
+      <div class="third-content">
+        <span>Mobile </span>
+        <span class="outline">legends</span>
+        <span>Moonton</span>
+      </div>
+    </section>
+
+    <section class="fourth-part">
+      <video autoplay muted loop playsinline class="fourth-background-video">
+        <source src="video/star background.mp4" type="video/mp4" />
       </video>
+
+      <div class="fourth-content">
+        <div class="lane-intro">
+          <h2 class="lane-title">Lane in Mobile Legends</h2>
+          <p class="lane-hint">Scroll horizontally for more information →</p>
+        </div>
+
+        <div class="scroll-content">
+          <div class="scroll-img">
+            <div class="lane-card">
+              <img src="images/midlane.png" alt="Mid lane information" />
+              <div class="lane-info">
+                <span class="lane-number">1</span>
+                <h3 class="lane-name">Mid Lane</h3>
+                <p class="lane-text">
+                  Lorem ipsum dolor mollitia doloremque esse.
+                </p>
+              </div>
+            </div>
+            <div class="lane-card">
+              <img src="images/goldlane.png" alt="Gold lane information" />
+              <div class="lane-info">
+                <span class="lane-number">2</span>
+                <h3 class="lane-name">Gold Lane</h3>
+                <p class="lane-text">
+                  Lorem ipsum dolor mollitia doloremque esse.
+                </p>
+              </div>
+            </div>
+            <div class="lane-card">
+              <img src="images/goldlane.png" alt="Gold lane information" />
+              <div class="lane-info">
+                <span class="lane-number">2</span>
+                <h3 class="lane-name">Gold Lane</h3>
+                <p class="lane-text">
+                  Lorem ipsum dolor mollitia doloremque esse.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <script src="script.js"></script>
