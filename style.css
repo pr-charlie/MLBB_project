@@ -26,15 +26,7 @@
 body {
   font-family: adamina, sans-serif;
 }
-.cursor {
-  width: 20px;
-  height: 20px;
-  background-color: white;
-  border-radius: 50%;
-  position: fixed; /*where an element is displayed*/
-  pointer-events: none;
-  z-index: 9999;
-}
+
 body.loading {
   overflow: hidden; /* Prevents scrolling while the loader is active */
 }
@@ -477,18 +469,214 @@ body.loading {
 third part 
 
 */
+
 .third-part {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
+  background-color: black;
 }
 
-.third-background-video {
-  position: absolute;
+.third-content {
+  position: static;
+  z-index: 1;
+  font-family: Adamina, sans-serif;
+  font-weight: 900;
+  font-size: 90px;
+  color: beige;
+  font-style: italic;
+}
+.third-content span {
+  padding-left: 40px;
+}
+/*.third-content span:nth-child(3n + 2) {
+  color: transparent;
+  -webkit-text-stroke: 1.5px white;
+}*/ /*nth-child(4n + 2), which means "positions 2, 6, 10...". It works, but it breaks the moment you add or remove a word, since the 4 is your word count*/
+.third-content .outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(255, 255, 255); /*innerHTML copies the whole tag, attributes included, so every duplicate keeps it.*/
+}
+.third-content {
+  display: flex;
+  width: max-content;
+  animation: sliding 10s linear infinite;
+}
 
+@keyframes sliding {
+  from {
+    transform: translateX(0); /*The window’s left side is empty*/
+  }
+  to {
+    transform: translateX(-33.333%); /*
+100% 3 = 33.333%
+*/
+  }
+}
+/*fourth section*/
+.fourth-part {
+  position: relative; /*Establishes a positioning reference for absolute children.*/
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  isolation: isolate; /*Creates an independent stacking context for layers.*/
+}
+
+/* Background layer */
+
+.fourth-background-video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /*cover the available space while maintaining its aspect ratio.*/
+  position: absolute;
+  inset: 0; /* top, right, bottom, and left all at once*/
+  z-index: 0;
+  pointer-events: none; /*background layer won't intercept mouse interactions*/
+}
+
+/* Foreground and horizontal scroll container */
+.fourth-content {
+  /*the acutall scroll container.*/
+  position: relative; /*parent for inside children*/
   z-index: 1;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center; /*vertically aligns the two direct flex children in the center*/
+  gap: 200px; /*space between .lane-intro and .scroll-content*/
+
+  padding: 50px 7vw;
+  overflow-x: auto; /*horizontal Flexbox row, so the text panel sits beside the image group.*/
+  overflow-y: hidden;
+}
+
+/* Heading and instruction form one panel */
+.lane-intro {
+  flex: 0 0 65vw; /*flex-grow: 0 flex-shrink: 0 flex-basis: 65vw;*/
+  /*flex-shrink: 0	Don't shrink when space becomes limited*/
+  height: 20%;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column; /* the two children stack each other vertically*/
+  justify-content: space-between; /*horizontal Flexbox row, so the text panel sits beside the image group.*/
+
+  color: bisque;
+  font-family: Adamina;
+}
+
+.lane-title {
+  font-family: Adamina;
+
+  font-size: clamp(
+    40px,
+    6vw,
+    100px
+  ); /*clamp(minimum, preferred, maximum)* never lets it go below 40px or above 100px.*/
+  font-weight: 900;
+}
+
+.lane-hint {
+  font-family: Adamina;
+
+  font-size: clamp(18px, 2vw, 30px);
+}
+
+/* Images remain in one horizontal row */
+.scroll-content {
+  /*handles the scrolling.*/
+  display: flex;
+
+  align-items: center;
+  gap: 400px; /*separates the individual images.*/
+  isolation: isolate; /* Ensures that the section content is isolated from the background video */
+}
+.lane-card {
+  position: relative;
+  width: 600px;
+  height: 400px;
+
+  border: none; /* the pseudo-element draws the border now */
+
+  border-radius: 30px;
+
+  background-color: rgb(
+    2,
+    2,
+    73,
+    0.2
+  ); /* opacity of the color needd to be define to add the glassmoripm */
+
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 0 10px 5px rgba(17, 4, 118, 0.5);
+}
+.lane-card::before {
+  /*.scroll-content ::before creates another pseudo-element visual layer on top of glass panel without writting another HTML tag*/
+  content: ""; /*tells the browser to generate the pseudo-element.*/
+  position: absolute;
+  inset: 0; /*to fill the entire panel.*/
+  padding: 2px; /* border thickness */
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    /*direction of the gradient.*/ #3c78ff 0%,
+    transparent 30%,
+    transparent 70%,
+    #3c78ff 100%
+  ); /*Paints the diagonal color across the full layer.*/
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    /*tells the browser to use the content-box area as the reference for that mask layer.*/
+    linear-gradient(#000 0 0);
+  mask-composite: exclude; /*masking allows you to control which parts of an element are visible.*/
+
+  pointer-events: none;
+}
+.scroll-img {
+  display: flex; /* the main flex for the scroll content*/
+  gap: 400px; /* gap between two box*/
+}
+
+.lane-card {
+  display: flex; /* flex for the content*/
+  gap: 20px; /* padding from left for the content*/
+  padding: 20px; /* padding the content inside the box*/
+}
+
+.lane-card img {
+  flex: 0 0 260px;
+  width: 260px;
+  height: 100%;
+
+  border-radius: 20px;
+}
+
+.lane-info {
+  display: flex;
+  flex-direction: column; /* mathi bata tala*/
+  gap: 10px;
+  min-width: 0;
+  color: beige;
+}
+
+.lane-number {
+  font-size: 80px;
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(12, 242, 250);
+  text-shadow:
+    0 0 6px #3c78ff,
+    0 0 18px #3c78ff,
+    0 0 36px rgba(60, 120, 255, 0.6);
+  padding-top: 10px;
+}
+.lane-name {
+  font-size: 50px;
+  font-weight: 300;
+}
+.lane-text {
+  font-size: 26px;
 }
