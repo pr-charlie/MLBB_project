@@ -17,13 +17,15 @@ const track = document.querySelector(".track");
 const second2stripimage = document.querySelector(".second-2ndstrip-image");
 const track2 = document.querySelector(".track2");
 
-const cursor = document.querySelector(".cursor");
+//thirdpart
+const thirdpart = document.querySelector(".third-part");
+const thirdcontent = document.querySelector(".third-content");
 
-document.addEventListener("mousemove", (event) => {
+/*document.addEventListener("mousemove", (event) => {
   cursor.style.left =
-    event.clientX + "px"; /*update the cursor with clientX and client Y*/
+    event.clientX + "px"; /*update the cursor with clientX and client Y
   cursor.style.top = event.clientY + "px";
-});
+});*/
 /*console.log(
   "Scroll position:",
   window.scrollY,
@@ -52,21 +54,12 @@ const observer = new IntersectionObserver(
           span.style.transitionDelay = (index % 16) * 0.2 + "s";
         }); /*Using % 16 makes the delay pattern repeat for the second set.*/
 
-        track2.innerHTML += track2.innerHTML;
-
-        const strip2 = track2.querySelectorAll("span");
-        strip2.forEach((span, index) => {
-          /* forEach is a javascript array method that allows to perform an operation on evet item in a collection*/
-          span.style.transitionDelay =
-            (index % 16) * 0.2 + "s"; /* each image with this transitionDelay*/
-        });
-
         observer.unobserve(secondPart);
       }
     }); /*The only code that knows about your 0.4 threshold is the observer.*/
   },
   {
-    threshold: 0.1 /* the observer triggers when appoximately 40% of the section section is visible*/,
+    threshold: 0.2 /* the observer triggers when appoximately 10% of the section section is visible*/,
   },
   /*.second-part tells JavaScript when the user reaches the second section.*/
   /*.second-part-content is the element we actually want to animate.*/
@@ -76,20 +69,35 @@ observer.observe(
 ); /*when 40% of .second-part is visible, the browser calls the observer’s function, which adds show to the panel. */
 
 const stripObserver = new IntersectionObserver(
-  (entries) => {
+  /*IntersectionObserver is a built-in JavaScript API. Important: IntersectionObserver does not calculate window.scrollY for you. It observes visibility, not the number of pixels scrolled.*/ (
+    entries,
+  ) => {
+    /*array containing IntersectionObserverEntry objects.*/
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
+        /*checks whether the observed element currently intersects the viewport.*/
         secondstripimage.classList.add("shows");
 
         setTimeout(() => {
           second2stripimage.classList.add("shows");
         }, 3000);
 
-        stripObserver.unobserve(secondPart);
+        track2.innerHTML += track2.innerHTML;
+
+        const strip2 = track2.querySelectorAll("span");
+        strip2.forEach((span, index) => {
+          /* forEach is a javascript array method that allows to perform an operation on evet item in a collection*/
+          span.style.transitionDelay =
+            (index % 16) * 0.2 + "s"; /* each image with this transitionDelay*/
+        });
+
+        stripObserver.unobserve(
+          secondPart,
+        ); /*Without unobserve(), the observer continues watching the element and can trigger again when its intersection crosses the threshold*/
       }
     });
   },
-  { threshold: 0.8 },
+  { threshold: 0.5 },
 );
 
 stripObserver.observe(secondPart);
@@ -133,3 +141,48 @@ let loading = setInterval(() => {
     }, 1000); /* tells when to play the animation when the loader is disappear (after 1millisecond)*/
   }
 }, 20); /* Set the interval to 50 milliseconds for a smooth loading effect */
+
+//third part
+
+thirdcontent.innerHTML =
+  thirdcontent.innerHTML + thirdcontent.innerHTML + thirdcontent.innerHTML;
+/*
+const laneScroller = document.querySelector(".fourth-content");
+const laneBackground = document.querySelector(".data-parallax");
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+laneScroller.addEventListener("scroll", () => {
+  const distance = laneScroller.scrollLeft;
+
+  const backgroundX = reduceMotion.matches ? 0 : -distance * 0.15;
+
+  laneBackground.style.transform = `translateX(${backgroundX}px)`;
+});*/ // for the parallax effect
+
+const fourthContent = document.querySelector(".fourth-content");
+
+fourthContent.addEventListener("scroll", () => {
+  console.log(fourthContent.scrollLeft);
+});
+(function () {
+  /*IIFE (Immediately Invoked Function Expression).It keeps variables inside the function's own scope rather than creating them as global variables.*/
+  // 3D Tilt Effect
+  const tiltCard = document.getElementById("tiltcard");
+  if (tiltCard) {
+    tiltCard.addEventListener("mousemove", (e) => {
+      /*listens for mouse movement over that card*/
+      const rect = tiltCard.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = (y - centerY) / 10;
+      const rotateY = (centerX - x) / 10;
+      tiltCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+    tiltCard.addEventListener("mouseleave", () => {
+      tiltCard.style.transform = "perspective(1000px) rotateX(0) rotateY(0)";
+    });
+  }
+})();
